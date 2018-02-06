@@ -32,12 +32,11 @@
 
 
         // origin is moved to the bottom point
-        // 
-
         function translatePie(ctx) {
             ctx.translate(400 + segmentCircumference / 2, 50 + radius);
         }
 
+        // rotate the context
         function rotatePie(ctx, rotations) {
             ctx.rotate((rotations / 10) * Math.PI);
         }
@@ -49,10 +48,12 @@
             return color;
         }
 
+        var green = 'rgba(95, 145, 80, 1.0)';
+        var red = 'rgba(160, 55, 50, 1.0)';
+
         function getSmallColor() {
-            var color = isGreen ? 'rgba(95, 145, 80, 1.0)' : 'rgba(160, 55, 50, 1.0)';
+            var color = isGreen ? green : red;
             isGreen = !isGreen;
-            console.log('small color', color);
             return color;
         }
 
@@ -83,6 +84,7 @@
 
             doubles(ctx, smallColor);
             trebles(ctx, smallColor);
+            bull(ctx);
 
             function doubles(ctx, smallColor) {
                 ctx.restore();
@@ -130,39 +132,78 @@
                 ctx.restore();
             }
 
+            function bull(ctx) {
+                ctx.restore();
+                ctx.save();
+                translatePie(ctx);
+                rotatePie(ctx, rotations);
+                setStrokeStyle(ctx);
+
+                var startX = 0
+                var endX = 2;
+                var startY = 0
+                var endY = -1 * targetWidth / 2
+                var curveOffset = 2
+
+                // double bull
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.arcTo(startX, endY - curveOffset, -1 * endX, endY, 3);
+                ctx.lineTo(startX, startY);
+                ctx.fillStyle = red;
+                ctx.fill();
+                ctx.restore();
+
+                // single bull
+                ctx.save();
+                translatePie(ctx);
+                rotatePie(ctx, rotations);
+
+                startX = 2
+                endX = 3
+                startY = endY
+                endY = -1 * targetWidth
+
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.arcTo(0, startY - curveOffset, -1 * startX, startY, 3);
+                ctx.lineTo(-1 * endX,  endY);
+                ctx.arcTo(0, endY - curveOffset, endX, endY, 4);
+                ctx.lineTo(3, startY);
+                ctx.fillStyle = green;
+                ctx.fill();
+                ctx.restore();
+
+                // inner wire
+                ctx.save();
+                translatePie(ctx);
+                rotatePie(ctx, rotations);
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.arcTo(0, startY - curveOffset, -1 * startX, startY, 3);
+                setStrokeStyle(ctx);
+                ctx.stroke();
+                ctx.restore();
+
+                // outer wire
+                ctx.save();
+                translatePie(ctx);
+                rotatePie(ctx, rotations);
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.arcTo(0, endY - curveOffset, -1 * endX, endY, 4);
+                setStrokeStyle(ctx);
+                ctx.stroke();
+                ctx.restore();
+            }
         }
 
         for (i = 0; i < 20; i++) {
             createPie(i)
         }
 
-        //ctx.moveTo(400 + segmentCircumference / 2, 50 + radius);
-        /*
-        ctx.beginPath();
-        ctx.arc(400 + segmentCircumference / 2, 50 + radius, radius + 10, 0, 2*Math.PI)
-        ctx.stroke();
-        */
 
-
-/*
-        // triple
-        ctx.moveTo(105, 155);
-        ctx.arcTo(150, 137, 195, 155, 140);
-        ctx.moveTo(97, 135);
-        ctx.arcTo(150, 117, 203, 135, 185);
-
-        // double
-        ctx.moveTo(57, 45);
-        ctx.arcTo(150, 5, 245, 45, 240);
-
-        // guidelines
-        ctx.moveTo(50, 0);
-        ctx.lineTo(50, 300);
-        ctx.stroke();
-        ctx.moveTo(250, 0);
-        ctx.lineTo(250, 300);
-        ctx.stroke();
-        */
 
     </script>
 </body>
